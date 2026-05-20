@@ -1,0 +1,40 @@
+{
+  "name": "fixenv",
+  "version": "0.1.0",
+  "description": "Fix and standardize your local dev environment",
+  "keywords": ["cli", "devtools", "environment", "setup", "dx"],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/flaviengibs/fixenv"
+  },
+  "homepage": "https://github.com/flaviengibs/fixenv#readme",
+  "engines": {
+    "node": ">=18"
+  },
+  "bin": {
+    "fixenv": "./dist/bin/fixenv.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup bin/fixenv.ts src/cli.ts --format cjs --out-dir dist",
+    "prepublishOnly": "npm run build",
+    "dev": "tsx bin/fixenv.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "chalk": "4.1.2",
+    "commander": "12.1.0",
+    "js-yaml": "4.1.0",
+    "ora": "5.4.1"
+  },
+  "devDependencies": {
+    "@types/js-yaml": "4.0.9",
+    "@types/node": "20.14.0",
+    "tsup": "8.1.0",
+    "tsx": "4.15.6",
+    "typescript": "5.4.5"
+  }
+}
