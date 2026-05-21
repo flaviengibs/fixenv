@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as yaml from 'js-yaml';
 
-export interface EnvyConfig {
+export interface fixenvConfig {
   runtime?: {
     node?: string | number;
     python?: string | number;
@@ -14,7 +14,7 @@ export interface EnvyConfig {
   };
 }
 
-export function loadConfig(): EnvyConfig | null {
+export function loadConfig(): fixenvConfig | null {
   const configPath = path.join(process.cwd(), 'fixenv.yaml');
 
   if (!fs.existsSync(configPath)) {
@@ -23,14 +23,14 @@ export function loadConfig(): EnvyConfig | null {
 
   try {
     const raw = fs.readFileSync(configPath, 'utf-8');
-    const parsed = yaml.load(raw) as EnvyConfig;
+    const parsed = yaml.load(raw) as fixenvConfig;
     return parsed ?? null;
   } catch {
     return null;
   }
 }
 
-export function writeConfig(config: EnvyConfig): void {
+export function writeConfig(config: fixenvConfig): void {
   const configPath = path.join(process.cwd(), 'fixenv.yaml');
   const content = yaml.dump(config, { lineWidth: 80, noRefs: true });
   fs.writeFileSync(configPath, content, 'utf-8');

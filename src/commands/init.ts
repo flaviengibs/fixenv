@@ -5,7 +5,7 @@ import { detectNode } from '../detectors/node';
 import { detectPython } from '../detectors/python';
 import { parseDockerCompose } from '../parsers/dockerCompose';
 import { loadConfig, writeConfig } from '../core/config';
-import type { EnvyConfig } from '../core/config';
+import type { fixenvConfig } from '../core/config';
 import { log } from '../core/logger';
 import { createSpinner } from '../core/spinner';
 
@@ -38,10 +38,10 @@ export async function initCommand(): Promise<void> {
   spinner.stop();
 
   // Build config
-  const config: EnvyConfig = {};
+  const config: fixenvConfig = {};
 
   // Runtime versions
-  const runtime: EnvyConfig['runtime'] = {};
+  const runtime: fixenvConfig['runtime'] = {};
 
   if (nodeResult.version) {
     // Use major.minor.patch if available
@@ -62,7 +62,7 @@ export async function initCommand(): Promise<void> {
   }
 
   // Install commands
-  const install: EnvyConfig['install'] = {};
+  const install: fixenvConfig['install'] = {};
   const cwd = process.cwd();
 
   if (fs.existsSync(path.join(cwd, 'pnpm-lock.yaml'))) {

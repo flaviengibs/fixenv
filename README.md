@@ -1,25 +1,39 @@
-# envy
+# fixenv
 
 > Fix and standardize your local dev environment
 
-`envy` is a CLI tool that detects, diagnoses, and repairs common local development environment issues — mismatched Node versions, missing Python, Docker not running, and more.
+`fixenv` is a CLI tool that detects, diagnoses, and repairs common local development environment issues — mismatched Node versions, missing Python, Docker not running, stale dependencies, and more.
 
 ## Installation
 
 ```bash
-npm install -g envy
-# or
-npx envy
+npm install -g @flaviengibs/fixenv
+# or run without installing
+npx @flaviengibs/fixenv
 ```
+
+Requires Node.js ≥ 18.
+
+## Usage
+
+`fixenv` is meant to be run from the root of a project you want to diagnose or fix — not from its own directory.
+
+```bash
+cd my-project/    # the project you want to repair
+fixenv doctor     # inspect that project's environment
+fixenv up         # fix and start it
+```
+
+Detectors look for files like `.nvmrc`, `package.json`, `requirements.txt`, and `docker-compose.yml` in the current working directory.
 
 ## Commands
 
-### `envy doctor`
+### `fixenv doctor`
 
-Diagnose your current environment. Checks Node.js, Python, Docker, and package managers.
+Diagnose your current environment. Checks Node.js, Python, Docker, and package managers (npm, pnpm, yarn).
 
 ```
-$ envy doctor
+$ fixenv doctor
 
   System Diagnosis
 
@@ -34,36 +48,51 @@ $ envy doctor
   python  →  Install Python 3: https://www.python.org/downloads/
 ```
 
-### `envy up`
+When issues are found, each one is listed with a suggested fix. Run `fixenv up` to attempt automatic remediation.
 
-Automatically fix detected issues and start your environment.
+### `fixenv up`
+
+Fix detected issues and start your environment end-to-end.
 
 ```bash
-envy up
+fixenv up
 ```
 
-- Runs all detectors
-- Auto-fixes version mismatches (via nvm, pyenv)
-- Installs dependencies
-- Starts Docker Compose services if `docker-compose.yml` is present
+What it does:
 
-### `envy sync`
+- Runs all detectors in parallel
+- Auto-fixes Node.js version mismatches via **nvm** (if available)
+- Auto-fixes Python version mismatches via **pyenv** (if available)
+- Installs Node and Python dependencies
+- Starts Docker Compose services if a `docker-compose.yml` is present
+
+If a version manager isn't installed, `fixenv up` prints the manual steps needed instead of failing silently.
+
+### `fixenv sync`
 
 Check for environment drift and reinstall only what's needed.
 
 ```bash
-envy sync
+fixenv sync
 ```
 
-### `envy init`
+- Runs all detectors and reports any drift (version mismatches, missing tools)
+- Reinstalls Node modules if `package.json` is newer than `node_modules`
+- Reinstalls Python deps if `requirements.txt` or `pyproject.toml` is present
 
-Generate an `envy.yaml` config file based on your current environment.
+### `fixenv init`
+
+Generate a `fixenv.yaml` config file based on your current environment.
 
 ```bash
-envy init
+fixenv init
 ```
 
-## Configuration (`envy.yaml`)
+Detects your current Node and Python versions, Docker Compose services, and the right install command for your package manager (npm / yarn / pnpm). Writes the result to `fixenv.yaml` in the current directory.
+
+## Configuration (`fixenv.yaml`)
+
+All fields are optional. `fixenv` works without a config file, but having one lets you pin versions and customize install commands.
 
 ```yaml
 runtime:
@@ -79,10 +108,32 @@ install:
   python: "pip install -r requirements.txt"
 ```
 
+| Field | Description |
+|---|---|
+| `runtime.node` | Required Node.js version. Matched against `.nvmrc` if present. |
+| `runtime.python` | Required Python version. |
+| `services` | Docker Compose services to start with `fixenv up`. Defaults to all services. |
+| `install.node` | Command used to install Node dependencies. |
+| `install.python` | Command used to install Python dependencies. |
+
+## Auto-fix support
+
+| Tool | Version fix | How |
+|---|---|---|
+| Node.js | ✓ | `nvm install` + `nvm use` |
+| Python | ✓ | `pyenv install` + `pyenv local` |
+| Docker | — | Prints manual instructions |
+| Package managers | — | Prints manual instructions |
+
 ## Development
 
 ```bash
 npm install
-npm run dev -- doctor
-npm run build
+npm run dev -- doctor   # run a command locally via tsx
+npm run build           # compile to dist/
+npm run typecheck       # type-check without emitting
 ```
+
+## License
+
+MIT

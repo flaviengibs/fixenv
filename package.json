@@ -1,5 +1,5 @@
 {
-  "name": "fixenv",
+  "name": "@flaviengibs/fixenv",
   "version": "0.1.0",
   "description": "Fix and standardize your local dev environment",
   "keywords": ["cli", "devtools", "environment", "setup", "dx"],
