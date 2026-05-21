@@ -1,6 +1,6 @@
 {
   "name": "@flaviengibs/fixenv",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Fix and standardize your local dev environment",
   "keywords": ["cli", "devtools", "environment", "setup", "dx"],
   "license": "MIT",
@@ -20,6 +20,7 @@
   ],
   "scripts": {
     "build": "tsup bin/fixenv.ts src/cli.ts --format cjs --out-dir dist",
+    "prepare": "npm run build",
     "prepublishOnly": "npm run build",
     "dev": "tsx bin/fixenv.ts",
     "typecheck": "tsc --noEmit"
